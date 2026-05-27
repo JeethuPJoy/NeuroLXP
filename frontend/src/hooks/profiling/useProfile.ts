@@ -48,7 +48,6 @@ export interface ProfileData {
   placementEligibility: string;
   offers: string;
   preferredName: string;
-  // languagePreference: string;
   accessibilityNeeds: string;
   deviceAccess: string;
   alternateContact: string;
@@ -185,7 +184,7 @@ export interface ProfileData {
     institution: string;
     fieldOfStudy: string;
     gradingSystem: string;
-    grade: string;
+    grade?: string;
     startYear: string;
     endYear: string;
   }[];
@@ -297,6 +296,36 @@ export interface ProfileData {
   gov_isRemotePosting?: boolean;
 
   gov_accessibilityFeatures?: string[];
+
+  section?: string;
+  rollNumber?: string;
+  schoolName?: string;
+  schoolBoard?: string;
+  schoolMedium?: string;
+  streamOrGroup?: string;
+  overallPercentage?: string;
+  favouriteSubject?: string;
+  academicStrengths?: string;
+  academicWeaknesses?: string;
+  academicNote?: string;
+  sportsActivities?: string;
+  artsHobbies?: string;
+  schoolClubs?: string;
+  leadershipRoles?: string;
+  schoolAwards?: string;
+  volunteerWork?: string;
+  dreamProfession?: string;
+  interestedDomain?: string;
+  higherStudyPlan?: string;
+  learningStyle?: string;
+  studyHoursPerDay?: string;
+  digitalLiteracyLevel?: string;
+  guardianName?: string;
+  guardianRelation?: string;
+  guardianContact?: string;
+  guardianOccupation?: string;
+  guardianEducation?: string;
+  grade?: string;
 }
 
 export function useProfile(userId: string) {

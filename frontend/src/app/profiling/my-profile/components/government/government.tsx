@@ -491,6 +491,19 @@ export default function GovernmentTab({
     set(key, updated);
   };
 
+  const MAX_FILE_SIZE = 10 * 1024; // 10 KB
+
+  const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_FILE_SIZE) {
+      alert("File size must not exceed 10 KB.");
+      e.target.value = "";
+      return;
+    }
+    onChange("resumeFileName", file.name);
+  };
+
   return (
     <div className="csv-sections">
       <div className="section">
@@ -1339,7 +1352,6 @@ export default function GovernmentTab({
         </div>
       </div>
 
-      {/* ── Portfolio — mandatory ── */}
       <div className="section">
         <SectionHeading title="Portfolio" />
         <div className="section-grid">
@@ -1348,11 +1360,18 @@ export default function GovernmentTab({
               Resume <Req />
             </label>
             <input
-              type="text"
-              value={profile.resumeFileName ?? ""}
-              onChange={(e) => onChange("resumeFileName", e.target.value)}
-              placeholder="Resume file name or URL"
+              id="resume-upload-government"
+              type="file"
+              accept=".pdf,.doc,.docx"
+              style={{ display: "none" }}
+              onChange={handleResumeUpload}
             />
+            <label htmlFor="resume-upload-government" className="upload-btn">
+              📎 Choose File
+            </label>
+            {profile.resumeFileName && (
+              <span className="upload-file-name">✓ {profile.resumeFileName}</span>
+            )}
             <FieldError msg={errors.resumeFileName} />
           </div>
 

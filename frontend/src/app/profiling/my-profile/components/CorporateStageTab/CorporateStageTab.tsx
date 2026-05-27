@@ -42,6 +42,19 @@ export default function CorporateStageTab({
   onChange,
   errors = {},
 }: Props) {
+  const MAX_FILE_SIZE = 10 * 1024; // 10 KB
+
+  const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_FILE_SIZE) {
+      alert("File size must not exceed 10 KB.");
+      e.target.value = "";
+      return;
+    }
+    onChange("resumeFileName", file.name);
+  };
+
   return (
     <div className="csv-sections">
       <div className="section">
@@ -173,93 +186,101 @@ export default function CorporateStageTab({
                 credentialId: "",
               },
             ]
-          ).map((certification, index) => (
-            <div key={index} className="skill-record">
-              <div className="section-grid">
-                <div className="field">
-                  <label className="field-label">Certification Name</label>
-                  <input
-                    type="text"
-                    value={certification.name}
-                    onChange={(e) => {
-                      const updated = [...(profile.certifications ?? [])];
-                      updated[index] = {
-                        ...updated[index],
-                        name: e.target.value,
-                      };
-                      onChange("certifications", updated);
-                    }}
-                    placeholder="e.g. AWS Certified Developer"
-                  />
-                </div>
+          ).map((certification, index) => {
+            const c = certification as {
+              name: string;
+              issuingOrg: string;
+              issueDate: string;
+              credentialId: string;
+            };
+            return (
+              <div key={index} className="skill-record">
+                <div className="section-grid">
+                  <div className="field">
+                    <label className="field-label">Certification Name</label>
+                    <input
+                      type="text"
+                      value={c.name}
+                      onChange={(e) => {
+                        const updated = [...(profile.certifications ?? [])];
+                        updated[index] = {
+                          ...updated[index],
+                          name: e.target.value,
+                        };
+                        onChange("certifications", updated);
+                      }}
+                      placeholder="e.g. AWS Certified Developer"
+                    />
+                  </div>
 
-                <div className="field">
-                  <label className="field-label">Issuer</label>
-                  <input
-                    type="text"
-                    value={certification.issuer}
-                    onChange={(e) => {
-                      const updated = [...(profile.certifications ?? [])];
-                      updated[index] = {
-                        ...updated[index],
-                        issuer: e.target.value,
-                      };
-                      onChange("certifications", updated);
-                    }}
-                    placeholder="e.g. Amazon Web Services"
-                  />
-                </div>
+                  <div className="field">
+                    <label className="field-label">Issuer</label>
+                    <input
+                      type="text"
+                      value={c.issuingOrg}
+                      onChange={(e) => {
+                        const updated = [...(profile.certifications ?? [])];
+                        updated[index] = {
+                          ...updated[index],
+                          issuingOrg: e.target.value,
+                        };
+                        onChange("certifications", updated);
+                      }}
+                      placeholder="e.g. Amazon Web Services"
+                    />
+                  </div>
 
-                <div className="field">
-                  <label className="field-label">Year</label>
-                  <input
-                    type="text"
-                    value={certification.year}
-                    onChange={(e) => {
-                      const updated = [...(profile.certifications ?? [])];
-                      updated[index] = {
-                        ...updated[index],
-                        year: e.target.value,
-                      };
-                      onChange("certifications", updated);
-                    }}
-                    placeholder="e.g. 2025"
-                  />
-                </div>
+                  <div className="field">
+                    <label className="field-label">Year</label>
+                    <input
+                      type="text"
+                      value={c.issueDate}
+                      onChange={(e) => {
+                        const updated = [...(profile.certifications ?? [])];
+                        updated[index] = {
+                          ...updated[index],
+                          issueDate: e.target.value,
+                        };
+                        onChange("certifications", updated);
+                      }}
+                      placeholder="e.g. 2025"
+                    />
+                  </div>
 
-                <div className="field">
-                  <label className="field-label">Credential ID</label>
-                  <input
-                    type="text"
-                    value={certification.credentialId}
-                    onChange={(e) => {
-                      const updated = [...(profile.certifications ?? [])];
-                      updated[index] = {
-                        ...updated[index],
-                        credentialId: e.target.value,
-                      };
-                      onChange("certifications", updated);
-                    }}
-                    placeholder="e.g. ABC123"
-                  />
-                </div>
+                  <div className="field">
+                    <label className="field-label">Credential ID</label>
+                    <input
+                      type="text"
+                      value={c.credentialId}
+                      onChange={(e) => {
+                        const updated = [...(profile.certifications ?? [])];
+                        updated[index] = {
+                          ...updated[index],
+                          credentialId: e.target.value,
+                        };
+                        onChange("certifications", updated);
+                      }}
+                      placeholder="e.g. ABC123"
+                    />
+                  </div>
 
-                {index > 0 && (
-                  <button
-                    type="button"
-                    className="remove-skill-btn"
-                    onClick={() => {
-                      const updated = [...(profile.certifications ?? [])];
-                      updated.splice(index, 1);
-                      onChange("certifications", updated);
-                    }}
-                  >
-                    Remove
-                  </button>
-                )}
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      className="remove-skill-btn"
+                      onClick={() => {
+                        const updated = [...(profile.certifications ?? [])];
+                        updated.splice(index, 1);
+                        onChange("certifications", updated);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           <FieldError msg={errors.certifications} />
         </div>
@@ -383,241 +404,239 @@ export default function CorporateStageTab({
         </div>
       </div>
 
-        <div className="section">
-          <SectionHeading title="Employment" />
-          <div className="section-grid">
-            <div className={fieldCls(errors.employmentStatus)}>
-              <label className="field-label">
-                Employment Status <Req />
-              </label>
-              <select
-                value={profile.employmentStatus ?? ""}
-                onChange={(e) => onChange("employmentStatus", e.target.value)}
-              >
-                <option value="">Select…</option>
-                {[
-                  "Employed",
-                  "Self-employed",
-                  "Freelancer",
-                  "Unemployed",
-                  "Student",
-                ].map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-              <FieldError msg={errors.employmentStatus} />
-            </div>
-
-            <div className={fieldCls(errors.desiredRole)}>
-              <label className="field-label">
-                Desired Role <Req />
-              </label>
-              <input
-                type="text"
-                value={profile.desiredRole ?? ""}
-                onChange={(e) => onChange("desiredRole", e.target.value)}
-                placeholder="e.g. Senior Frontend Developer"
-              />
-              <FieldError msg={errors.desiredRole} />
-            </div>
-
-            <div className={fieldCls(errors.preferredLocation)}>
-              <label className="field-label">
-                Preferred Location <Req />
-                <button
-                  type="button"
-                  className="add-skill-btn"
-                  onClick={() =>
-                    onChange("preferredLocation", [
-                      ...(profile.preferredLocation ?? [""]),
-                      "",
-                    ])
-                  }
-                >
-                  + Add Location
-                </button>
-              </label>
-
-              {(profile.preferredLocation ?? [""]).map((location, index) => (
-                <div key={index} className="skill-name-row">
-                  <input
-                    type="text"
-                    value={location}
-                    onChange={(e) => {
-                      const updated = [...(profile.preferredLocation ?? [""])];
-                      updated[index] = e.target.value;
-                      onChange("preferredLocation", updated);
-                    }}
-                    placeholder="e.g. Bangalore, Remote"
-                  />
-
-                  {index > 0 && (
-                    <button
-                      type="button"
-                      className="remove-skill-btn"
-                      onClick={() => {
-                        const updated = [
-                          ...(profile.preferredLocation ?? [""]),
-                        ];
-                        updated.splice(index, 1);
-                        onChange("preferredLocation", updated);
-                      }}
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
+      <div className="section">
+        <SectionHeading title="Employment" />
+        <div className="section-grid">
+          <div className={fieldCls(errors.employmentStatus)}>
+            <label className="field-label">
+              Employment Status <Req />
+            </label>
+            <select
+              value={profile.employmentStatus ?? ""}
+              onChange={(e) => onChange("employmentStatus", e.target.value)}
+            >
+              <option value="">Select…</option>
+              {[
+                "Employed",
+                "Self-employed",
+                "Freelancer",
+                "Unemployed",
+                "Student",
+              ].map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
               ))}
-
-              <FieldError msg={errors.preferredLocation} />
-            </div>
-
-            <div className={fieldCls(errors.expectedSalary)}>
-              <label className="field-label">
-                Expected Salary <Req />
-              </label>
-              <input
-                type="text"
-                value={profile.expectedSalary ?? ""}
-                onChange={(e) => onChange("expectedSalary", e.target.value)}
-                placeholder="e.g. 12–15 LPA"
-              />
-              <FieldError msg={errors.expectedSalary} />
-            </div>
+            </select>
+            <FieldError msg={errors.employmentStatus} />
           </div>
 
-          <div className={fieldCls(errors.workHistory)}>
+          <div className={fieldCls(errors.desiredRole)}>
             <label className="field-label">
-              Work History <Req />
+              Desired Role <Req />
+            </label>
+            <input
+              type="text"
+              value={profile.desiredRole ?? ""}
+              onChange={(e) => onChange("desiredRole", e.target.value)}
+              placeholder="e.g. Senior Frontend Developer"
+            />
+            <FieldError msg={errors.desiredRole} />
+          </div>
+
+          <div className={fieldCls(errors.preferredLocation)}>
+            <label className="field-label">
+              Preferred Location <Req />
               <button
                 type="button"
                 className="add-skill-btn"
                 onClick={() =>
-                  onChange("workHistory", [
-                    ...(profile.workHistory ?? []),
-                    {
-                      company: "",
-                      role: "",
-                      from: "",
-                      to: "",
-                      description: "",
-                    },
+                  onChange("preferredLocation", [
+                    ...(profile.preferredLocation ?? [""]),
+                    "",
                   ])
                 }
               >
-                + Add Work History
+                + Add Location
               </button>
             </label>
 
-            {(
-              profile.workHistory ?? [
-                { company: "", role: "", from: "", to: "", description: "" },
-              ]
-            ).map((entry, index) => (
-              <div key={index} className="skill-record">
-                <div className="section-grid">
-                  <div className="field">
-                    <label className="field-label">
-                      Company <Req />
-                    </label>
-                    <input
-                      type="text"
-                      value={entry.company}
-                      onChange={(e) => {
-                        const updated = [...(profile.workHistory ?? [])];
-                        updated[index] = { ...entry, company: e.target.value };
-                        onChange("workHistory", updated);
-                      }}
-                      placeholder="e.g. Infosys"
-                    />
-                  </div>
+            {(profile.preferredLocation ?? [""]).map((location, index) => (
+              <div key={index} className="skill-name-row">
+                <input
+                  type="text"
+                  value={location}
+                  onChange={(e) => {
+                    const updated = [...(profile.preferredLocation ?? [""])];
+                    updated[index] = e.target.value;
+                    onChange("preferredLocation", updated);
+                  }}
+                  placeholder="e.g. Bangalore, Remote"
+                />
 
-                  <div className="field">
-                    <label className="field-label">
-                      Role <Req />
-                    </label>
-                    <input
-                      type="text"
-                      value={entry.role}
-                      onChange={(e) => {
-                        const updated = [...(profile.workHistory ?? [])];
-                        updated[index] = { ...entry, role: e.target.value };
-                        onChange("workHistory", updated);
-                      }}
-                      placeholder="e.g. Software Engineer"
-                    />
-                  </div>
-
-                  <div className="field">
-                    <label className="field-label">
-                      From <Req />
-                    </label>
-                    <input
-                      type="text"
-                      value={entry.from}
-                      onChange={(e) => {
-                        const updated = [...(profile.workHistory ?? [])];
-                        updated[index] = { ...entry, from: e.target.value };
-                        onChange("workHistory", updated);
-                      }}
-                      placeholder="e.g. Jan 2022"
-                    />
-                  </div>
-
-                  <div className="field">
-                    <label className="field-label">
-                      To <Req />
-                    </label>
-                    <input
-                      type="text"
-                      value={entry.to}
-                      onChange={(e) => {
-                        const updated = [...(profile.workHistory ?? [])];
-                        updated[index] = { ...entry, to: e.target.value };
-                        onChange("workHistory", updated);
-                      }}
-                      placeholder="e.g. Dec 2024 or Present"
-                    />
-                  </div>
-
-                  <div className="field full-col">
-                    <label className="field-label">Description</label>
-                    <textarea
-                      value={entry.description}
-                      onChange={(e) => {
-                        const updated = [...(profile.workHistory ?? [])];
-                        updated[index] = {
-                          ...entry,
-                          description: e.target.value,
-                        };
-                        onChange("workHistory", updated);
-                      }}
-                      rows={2}
-                      placeholder="Brief description of responsibilities…"
-                    />
-                  </div>
-
-                  {index > 0 && (
-                    <button
-                      type="button"
-                      className="remove-skill-btn"
-                      onClick={() => {
-                        const updated = [...(profile.workHistory ?? [])];
-                        updated.splice(index, 1);
-                        onChange("workHistory", updated);
-                      }}
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
+                {index > 0 && (
+                  <button
+                    type="button"
+                    className="remove-skill-btn"
+                    onClick={() => {
+                      const updated = [...(profile.preferredLocation ?? [""])];
+                      updated.splice(index, 1);
+                      onChange("preferredLocation", updated);
+                    }}
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
             ))}
 
-            <FieldError msg={errors.workHistory} />
+            <FieldError msg={errors.preferredLocation} />
           </div>
+
+          <div className={fieldCls(errors.expectedSalary)}>
+            <label className="field-label">
+              Expected Salary <Req />
+            </label>
+            <input
+              type="text"
+              value={profile.expectedSalary ?? ""}
+              onChange={(e) => onChange("expectedSalary", e.target.value)}
+              placeholder="e.g. 12–15 LPA"
+            />
+            <FieldError msg={errors.expectedSalary} />
+          </div>
+        </div>
+
+        <div className={fieldCls(errors.workHistory)}>
+          <label className="field-label">
+            Work History <Req />
+            <button
+              type="button"
+              className="add-skill-btn"
+              onClick={() =>
+                onChange("workHistory", [
+                  ...(profile.workHistory ?? []),
+                  {
+                    company: "",
+                    role: "",
+                    from: "",
+                    to: "",
+                    description: "",
+                  },
+                ])
+              }
+            >
+              + Add Work History
+            </button>
+          </label>
+
+          {(
+            profile.workHistory ?? [
+              { company: "", role: "", from: "", to: "", description: "" },
+            ]
+          ).map((entry, index) => (
+            <div key={index} className="skill-record">
+              <div className="section-grid">
+                <div className="field">
+                  <label className="field-label">
+                    Company <Req />
+                  </label>
+                  <input
+                    type="text"
+                    value={entry.company}
+                    onChange={(e) => {
+                      const updated = [...(profile.workHistory ?? [])];
+                      updated[index] = { ...entry, company: e.target.value };
+                      onChange("workHistory", updated);
+                    }}
+                    placeholder="e.g. Infosys"
+                  />
+                </div>
+
+                <div className="field">
+                  <label className="field-label">
+                    Role <Req />
+                  </label>
+                  <input
+                    type="text"
+                    value={entry.role}
+                    onChange={(e) => {
+                      const updated = [...(profile.workHistory ?? [])];
+                      updated[index] = { ...entry, role: e.target.value };
+                      onChange("workHistory", updated);
+                    }}
+                    placeholder="e.g. Software Engineer"
+                  />
+                </div>
+
+                <div className="field">
+                  <label className="field-label">
+                    From <Req />
+                  </label>
+                  <input
+                    type="text"
+                    value={entry.from}
+                    onChange={(e) => {
+                      const updated = [...(profile.workHistory ?? [])];
+                      updated[index] = { ...entry, from: e.target.value };
+                      onChange("workHistory", updated);
+                    }}
+                    placeholder="e.g. Jan 2022"
+                  />
+                </div>
+
+                <div className="field">
+                  <label className="field-label">
+                    To <Req />
+                  </label>
+                  <input
+                    type="text"
+                    value={entry.to}
+                    onChange={(e) => {
+                      const updated = [...(profile.workHistory ?? [])];
+                      updated[index] = { ...entry, to: e.target.value };
+                      onChange("workHistory", updated);
+                    }}
+                    placeholder="e.g. Dec 2024 or Present"
+                  />
+                </div>
+
+                <div className="field full-col">
+                  <label className="field-label">Description</label>
+                  <textarea
+                    value={entry.description}
+                    onChange={(e) => {
+                      const updated = [...(profile.workHistory ?? [])];
+                      updated[index] = {
+                        ...entry,
+                        description: e.target.value,
+                      };
+                      onChange("workHistory", updated);
+                    }}
+                    rows={2}
+                    placeholder="Brief description of responsibilities…"
+                  />
+                </div>
+
+                {index > 0 && (
+                  <button
+                    type="button"
+                    className="remove-skill-btn"
+                    onClick={() => {
+                      const updated = [...(profile.workHistory ?? [])];
+                      updated.splice(index, 1);
+                      onChange("workHistory", updated);
+                    }}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+
+          <FieldError msg={errors.workHistory} />
+        </div>
       </div>
 
       <div className="section">
@@ -806,11 +825,18 @@ export default function CorporateStageTab({
               Resume <Req />
             </label>
             <input
-              type="text"
-              value={profile.resumeFileName ?? ""}
-              onChange={(e) => onChange("resumeFileName", e.target.value)}
-              placeholder="Resume file name or URL"
+              id="resume-upload-corporate"
+              type="file"
+              accept=".pdf,.doc,.docx"
+              style={{ display: "none" }}
+              onChange={handleResumeUpload}
             />
+            <label htmlFor="resume-upload-corporate" className="upload-btn">
+              📎 Choose File
+            </label>
+            {profile.resumeFileName && (
+              <span className="upload-file-name">✓ {profile.resumeFileName}</span>
+            )}
             <FieldError msg={errors.resumeFileName} />
           </div>
 

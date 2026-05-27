@@ -7,17 +7,18 @@ import CorporateStageTab from './components/CorporateStageTab/CorporateStageTab'
 import SkillAcademyTab   from './components/SkillAcademyTab/SkillAcademyTab';
 import GovernmentTab     from './components/government/government';
 import NGOTenantTab      from './components/NGOTenantTab/NGOTenantTab';
+import SchoolTab from './components/SchoolTab/SchoolTab';
 
 import { useProfile, ProfileData } from '@/hooks/profiling/useProfile';
 import { saveMyProfile } from '@/lib/profiling/profiling.api';
-import { validateSelfProfile, validateCorporateProfile, ValidationErrors, validateGovernmentProfile, validateNgoProfile
+import { validateSelfProfile, validateCorporateProfile, ValidationErrors, validateGovernmentProfile, validateNgoProfile, validateSchoolProfile
         } from '@/hooks/profiling/useProfileValidation';
 
 type TabKey = 'self' | 'corporate' | 'skillacademy' | 'government' | 'ngo' | 'school';
 const tabKeys: TabKey[] = ['self', 'corporate', 'skillacademy', 'government', 'ngo', 'school'];
 
 const tabs: { key: TabKey; label: string }[] = [
-  { key: 'self',         label: 'Colleges / Universities' },
+  { key: 'self',         label: 'Student' },
   { key: 'corporate',    label: 'Corporate' },
   { key: 'skillacademy', label: 'Skill Academy' },
   { key: 'government',   label: 'Government' },
@@ -39,6 +40,7 @@ export default function LearnerProfilePage() {
   const [corporateErrors, setCorporateErrors] = useState<ValidationErrors>({});
   const [ngoErrors, setNgoErrors]             = useState<ValidationErrors>({});
   const [governmentErrors, setGovernmentErrors] = useState<ValidationErrors>({});
+  const [schoolErrors, setSchoolErrors]           = useState<ValidationErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [menuOpen, setMenuOpen]   = useState(false); // ← hamburger state
 
@@ -61,6 +63,7 @@ export default function LearnerProfilePage() {
         setCorporateErrors(validateCorporateProfile(next));
         setGovernmentErrors(validateGovernmentProfile(next));
         setNgoErrors(validateNgoProfile(next));
+        setSchoolErrors(validateSchoolProfile(next));
       }
       return next;
     });
@@ -72,24 +75,28 @@ export default function LearnerProfilePage() {
     const sErr    = validateSelfProfile(formData);
     const corpErr = validateCorporateProfile(formData);
     const govErr  = validateGovernmentProfile(formData);
-    const ngoErr  = validateNgoProfile(formData);
+    const ngoErr    = validateNgoProfile(formData);
+    const schoolErr = validateSchoolProfile(formData);
     setSelfErrors(sErr);
     setCorporateErrors(corpErr);
     setGovernmentErrors(govErr);
     setNgoErrors(ngoErr);
+    setSchoolErrors(schoolErr);
     setSubmitted(true);
 
     const totalErrors =
       Object.keys(sErr).length +
       Object.keys(corpErr).length +
       Object.keys(govErr).length +
-      Object.keys(ngoErr).length;
+      Object.keys(ngoErr).length +
+      Object.keys(schoolErr).length;
 
     if (totalErrors > 0) {
       if (Object.keys(sErr).length > 0)        setActiveTab('self');
       else if (Object.keys(corpErr).length > 0) setActiveTab('corporate');
       else if (Object.keys(govErr).length > 0)  setActiveTab('government');
-      else if (Object.keys(ngoErr).length > 0)  setActiveTab('ngo');
+      else if (Object.keys(ngoErr).length > 0)    setActiveTab('ngo');
+      else if (Object.keys(schoolErr).length > 0) setActiveTab('school');
       return;
     }
 
@@ -132,7 +139,8 @@ export default function LearnerProfilePage() {
     activeTab === 'self'       ? Object.keys(selfErrors).length       :
     activeTab === 'corporate'  ? Object.keys(corporateErrors).length  :
     activeTab === 'government' ? Object.keys(governmentErrors).length :
-    activeTab === 'ngo'        ? Object.keys(ngoErrors).length        : 0;
+    activeTab === 'ngo'        ? Object.keys(ngoErrors).length        :
+    activeTab === 'school'     ? Object.keys(schoolErrors).length     : 0;
 
   return (
     <div className={`profile-root${dark ? ' dark' : ''}`}>
@@ -219,6 +227,7 @@ export default function LearnerProfilePage() {
           {activeTab === 'skillacademy' && <SkillAcademyTab   profile={formData} onChange={handleChange} />}
           {activeTab === 'government'   && <GovernmentTab     profile={formData} onChange={handleChange} errors={governmentErrors} />}
           {activeTab === 'ngo'          && <NGOTenantTab      profile={formData} onChange={handleChange} errors={ngoErrors} />}
+          {activeTab === 'school'     && <SchoolTab      profile={formData} onChange={handleChange} errors={schoolErrors} />}
 
           <div className="save-footer">
             <button

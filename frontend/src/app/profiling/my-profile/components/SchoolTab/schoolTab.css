@@ -15,7 +15,7 @@
   --warning: #f59e0b;
   --danger: #ef4444;
   --border: rgba(0, 0, 0, 0.06);
-  --font-family: Segoe UI,system-ui,sans-serif;
+  --font-family: Segoe UI, system-ui, sans-serif;
 }
 
 .dark {
@@ -35,6 +35,10 @@
   --warning: #fbbf24;
   --danger: #f87171;
   --border: rgba(255, 255, 255, 0.06);
+}
+
+.section {
+  margin-bottom: 26px;
 }
 
 .section-header {
@@ -102,6 +106,7 @@
   transition: box-shadow 0.2s;
   appearance: none;
   -webkit-appearance: none;
+  min-height: 44px;
 }
 
 .field select {
@@ -121,6 +126,7 @@
   background-repeat: no-repeat;
   background-position: right 13px center;
   cursor: pointer;
+  min-height: 44px;
 }
 
 .field textarea {
@@ -151,77 +157,6 @@
   grid-column: 1 / -1;
 }
 
-.tag-input__box {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border) !important;
-  box-shadow: var(--sh-inset-sm);
-  background: var(--bg);
-  min-height: 48px;
-}
-
-.tag-input__box input {
-  flex: 1;
-  min-width: 140px;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent;
-  color: var(--text);
-  font-size: 14px;
-  font-family: var(--font-family);
-  padding: 2px 4px;
-}
-
-.tag-input__box input::placeholder {
-  color: var(--text-hint);
-}
-
-.tag-input__tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px 4px 12px;
-  border-radius: 99px;
-  background: var(--accent-light);
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 600;
-  box-shadow: var(--sh-raised-sm);
-  white-space: nowrap;
-}
-
-.tag-input__tag button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--accent);
-  font-size: 16px;
-  line-height: 1;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  opacity: 0.7;
-  transition: opacity 0.15s;
-  font-family: var(--font-family);
-}
-
-.tag-input__tag button:hover {
-  opacity: 1;
-}
-
-.education-record {
-  margin-bottom: 20px;
-  padding: 16px;
-  border-radius: 14px;
-  box-shadow: var(--sh-raised-sm);
-  background: var(--bg);
-}
-
 .skill-record {
   margin-bottom: 14px;
   padding: 14px;
@@ -230,37 +165,35 @@
   background: var(--bg);
 }
 
-.portfolio-main {
-  margin-top: 12px;
-}
-
-.skill-name-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
 .add-skill-btn {
   border: none;
   border-radius: 8px;
-  padding: 0px 32px;
+  padding: 0 20px;
   cursor: pointer;
-  font-weight: 500;
-  color: #0056b3;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--accent);
   background: transparent;
+  font-family: var(--font-family);
+  transition: opacity 0.2s;
+}
+
+.add-skill-btn:hover {
+  opacity: 0.75;
 }
 
 .remove-skill-btn {
   cursor: pointer;
   border: none;
   border-radius: 8px;
-  padding-left: 5px;
+  padding: 0 8px 6px 5px;
   font-size: 12px;
   color: #a91e2c;
-  padding-bottom: 6px;
+  background: transparent;
   width: fit-content;
   align-self: end;
-  background: transparent;
+  min-height: 36px;
+  font-family: var(--font-family);
 }
 
 .req {
@@ -283,43 +216,15 @@
   font-weight: 500;
 }
 
-.optional-tag {
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--text-sec, #888);
-  margin-left: 4px;
-}
-
 @media (max-width: 1024px) {
   .section-grid {
     grid-template-columns: repeat(2, 1fr);
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .skill-name-row {
-    align-items: stretch;
-  }
-
-  .add-skill-btn {
-    width: fit-content;
-    margin-top: 8px;
-  }
-
-  .section-header {
-    flex-wrap: wrap;
-  }
-
-  .section-grid {
-    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 540px) {
   .section-grid {
     grid-template-columns: 1fr;
-    width: 100%;
   }
 
   .full-col {
@@ -328,21 +233,8 @@
 
   .field input,
   .field select,
-  .field textarea,
-  .tag-input__box {
-    font-size: 13px;
-  }
-
-  .skill-name-row {
-    flex-direction: column;
-  }
-
-  .remove-skill-btn {
-    align-self: flex-start;
-  }
-
-  .section-title {
-    font-size: 12px;
+  .field textarea {
+    font-size: 16px;
   }
 }
 

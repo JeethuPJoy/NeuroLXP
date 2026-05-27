@@ -342,3 +342,38 @@
     font-size: 12px;
   }
 }
+
+/* ── File Upload Button ── */
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: var(--bg);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-family, "Segoe UI", system-ui, sans-serif);
+  border-radius: 10px;
+  box-shadow: var(--sh-raised);
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.1s;
+  user-select: none;
+  margin-top: 4px;
+}
+.upload-btn:hover {
+  box-shadow: var(--sh-raised-sm);
+}
+.upload-btn:active {
+  box-shadow: var(--sh-inset-sm);
+  transform: scale(0.98);
+}
+.upload-file-name {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--success, #10b981);
+  font-weight: 500;
+  word-break: break-all;
+}
+

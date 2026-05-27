@@ -1,8 +1,7 @@
 import { ProfileData } from "@/hooks/profiling/useProfile";
 
-export type ValidationErrors = Partial<Record<keyof ProfileData, string>>;
+export type ValidationErrors = Record<string, string>;
 
-/* ─────────────────── helpers ─────────────────── */
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRe = /^[+]?[\d\s\-().]{7,15}$/;
 const urlRe = /^https?:\/\/.+/i;
@@ -70,11 +69,9 @@ function notPast(val?: string | null, label = "Date"): string | undefined {
     : undefined;
 }
 
-/* ─────────────────── CSV-tab validator (Identity / Location / Enrollment) ─────────────────── */
 export function validateCsvProfile(data: ProfileData): ValidationErrors {
   const e: ValidationErrors = {};
 
-  /* Identity */
   if (!data.fullName?.trim()) e.fullName = "Full Name is required";
   else if (data.fullName.trim().length < 2)
     e.fullName = "Full Name must be at least 2 characters";
@@ -98,7 +95,6 @@ export function validateCsvProfile(data: ProfileData): ValidationErrors {
     else if (age > 100) e.dob = "Date of Birth seems too far back";
   }
 
-  /* Location — optional but format-checked if provided */
   if (data.country?.trim() && data.country.trim().length < 2)
     e.country = "Enter a valid country name";
   if (data.state?.trim() && data.state.trim().length < 2)
@@ -133,7 +129,6 @@ export function validateCsvProfile(data: ProfileData): ValidationErrors {
   const websiteErr = validateUrl(data.personalWebsite, "Personal Website");
   if (websiteErr) e.personalWebsite = websiteErr;
 
-  /* Enrollment dates */
   const enrollErr = notPast(data.enrollmentDate, "Enrollment Date");
   if (enrollErr) e.enrollmentDate = enrollErr;
 
@@ -148,11 +143,9 @@ export function validateCsvProfile(data: ProfileData): ValidationErrors {
   return e;
 }
 
-/* ─────────────────── Corporate Stage-tab validator ─────────────────── */
 export function validateCorporateProfile(data: ProfileData): ValidationErrors {
   const e: ValidationErrors = {};
 
-  /* Stage 1 — Identity & Organisation */
   if (!data.employeeIdentity?.trim())
     e.employeeIdentity = "Employee Identity is required";
 
@@ -171,7 +164,6 @@ export function validateCorporateProfile(data: ProfileData): ValidationErrors {
   else if ((data.preferredLocation ?? []).some((l) => !l.trim()))
     e.preferredLocation = "Remove empty location entries";
 
-  /* Stage 2 — Self Profile */
   if (!data.careerGoals?.trim()) e.careerGoals = "Career Goals is required";
   else if (data.careerGoals.trim().length < 10)
     e.careerGoals = "Career Goals should be at least 10 characters";
@@ -181,14 +173,12 @@ export function validateCorporateProfile(data: ProfileData): ValidationErrors {
   else if (data.learningGoals.trim().length < 10)
     e.learningGoals = "Learning Goals should be at least 10 characters";
 
-  /* Stage 3 — Assessment */
   if (!data.technicalSkillScore?.trim())
     e.technicalSkillScore = "Technical Skill Score is required";
 
   if (!data.functionalSkillScore?.trim())
     e.functionalSkillScore = "Functional Skill Score is required";
 
-  /* Stage 4 — Learning Behaviour */
   if (!data.trainingAttendance?.trim())
     e.trainingAttendance = "Training Attendance is required";
   else {
@@ -197,25 +187,20 @@ export function validateCorporateProfile(data: ProfileData): ValidationErrors {
       e.trainingAttendance = "Attendance must be a percentage between 0–100";
   }
 
-  /* Stage 5 — Certification */
   if (!data.certificationTracking?.trim())
     e.certificationTracking = "At least one Certification is required";
 
-  /* Stage 6 — Performance */
   if (!data.kpiPerformance?.trim())
     e.kpiPerformance = "KPI Performance is required";
 
-  /* Stage 7 — Career Progression */
   if (!data.careerGrowth?.trim()) e.careerGrowth = "Career Growth is required";
 
-  /* Stage 8 — Compliance */
   if (!data.mandatoryTrainingCompletion?.trim())
     e.mandatoryTrainingCompletion = "Mandatory Training Completion is required";
 
   return e;
 }
 
-/* ─────────────────── Combined validator (used in page.tsx handleSave) ─────────────────── */
 export function validateProfile(data: ProfileData): ValidationErrors {
   return {
     ...validateCsvProfile(data),
@@ -223,7 +208,6 @@ export function validateProfile(data: ProfileData): ValidationErrors {
   };
 }
 
-/* ─────────────────── field-level (on blur) ─────────────────── */
 export function validateField(
   field: keyof ProfileData,
   value: unknown,
@@ -236,7 +220,6 @@ export function validateField(
 export function validateSelfProfile(data: ProfileData): ValidationErrors {
   const e: ValidationErrors = {};
 
-  // NGO Required Fields
   if (!data.ngo_gender?.trim()) e.ngo_gender = "Gender is required";
 
   if (!data.ngo_dateOfBirth?.trim())
@@ -248,7 +231,6 @@ export function validateSelfProfile(data: ProfileData): ValidationErrors {
   if (!data.ngo_primaryLearningGoal?.trim())
     e.ngo_primaryLearningGoal = "Primary learning goal is required";
 
-  // Personal Preferences
   if (!data.nationality?.trim()) e.nationality = "Nationality is required";
 
   if (!data.id_proof_type?.trim())
@@ -260,7 +242,6 @@ export function validateSelfProfile(data: ProfileData): ValidationErrors {
   if (!data.identity_issuing_country?.trim())
     e.identity_issuing_country = "Issuing Country is required";
 
-  // Contact
   const altErr = requirePhone(data.alternateContact, "Alternate Contact");
   if (altErr) e.alternateContact = altErr;
 
@@ -269,7 +250,6 @@ export function validateSelfProfile(data: ProfileData): ValidationErrors {
   else if (!emailRe.test(data.alternateemailid.trim()))
     e.alternateemailid = "Enter a valid email address";
 
-  // Education History
   if (!data.educationHistory?.length) {
     e.educationHistory = "At least one education record is required";
   } else {
@@ -287,7 +267,6 @@ export function validateSelfProfile(data: ProfileData): ValidationErrors {
       e.educationHistory = "Please complete all required education fields";
   }
 
-  // Certifications
   if (data.certifications?.length) {
     const hasInvalidCertification = data.certifications.some(
       (cert) =>
@@ -300,7 +279,6 @@ export function validateSelfProfile(data: ProfileData): ValidationErrors {
       e.certifications = "Please complete all required certification fields";
   }
 
-  // Career Intent
   if (!data.careerGoal?.trim()) e.careerGoal = "Career Goal is required";
   else if (data.careerGoal.trim().length < 10)
     e.careerGoal = "Career Goal should be at least 10 characters";
@@ -337,7 +315,6 @@ export function validateSelfProfile(data: ProfileData): ValidationErrors {
       e.workHistory = "Please complete all required Work History fields";
   }
 
-  // Learning Intent
   if (!data.learningGoal?.trim()) e.learningGoal = "Learning Goal is required";
   else if (data.learningGoal.trim().length < 10)
     e.learningGoal = "Learning Goal should be at least 10 characters";
@@ -351,7 +328,6 @@ export function validateSelfProfile(data: ProfileData): ValidationErrors {
   if (!data.languagePreference?.trim())
     e.languagePreference = "Language preference is required";
 
-  // Self Skills
   if (!data.selfSkills?.length) {
     e.selfSkills = "At least one skill is required";
   } else {
@@ -367,7 +343,6 @@ export function validateSelfProfile(data: ProfileData): ValidationErrors {
       e.selfSkills = "Please complete all required skill fields";
   }
 
-  // Portfolio
   if (!data.resumeFileName?.trim()) e.resumeFileName = "Resume is required";
 
   const portfolioErr = requireUrl(data.portfolioLink, "Portfolio Link");
@@ -404,14 +379,12 @@ export function validateSelfProfile(data: ProfileData): ValidationErrors {
   return e;
 }
 
-/* ─────────────────── NGO Profile validator ─────────────────── */
 export function validateNgoProfile(data: ProfileData): ValidationErrors {
   const e: ValidationErrors = {};
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRe = /^[+]?[\d\s\-().]{7,15}$/;
   const urlRe   = /^https?:\/\/.+/i;
 
-  // ── Personal Identity ──
   if (!data.ngo_gender?.trim())
     e.ngo_gender = "Gender is required";
 
@@ -429,7 +402,6 @@ export function validateNgoProfile(data: ProfileData): ValidationErrors {
   if (!data.ngo_nationality?.trim())
     e.ngo_nationality = "Nationality is required";
 
-  // ── Communication ── ngo_primaryEmail ngo_mobileNumber ngo_preferredLanguage
   if (!data.ngo_primaryEmail?.trim())
     e.ngo_primaryEmail = "Email is required";
   else if (!emailRe.test(data.ngo_primaryEmail.trim()))
@@ -443,37 +415,29 @@ export function validateNgoProfile(data: ProfileData): ValidationErrors {
   if (!data.ngo_preferredLanguage?.trim())
     e.ngo_preferredLanguage = "Preferred Language is required";
 
-  // ── Location ──
   if (!data.ngo_country?.trim())
     e.ngo_country = "Country is required";
 
-  // ── Education ──
   if (!data.ngo_highestEducation?.trim())
     e.ngo_highestEducation = "Highest Education Level is required";
 
-  // ── Access & Learning ──
   if (!data.ngo_learningModePreference?.trim())
     e.ngo_learningModePreference = "Learning Mode Preference is required";
 
-  // ── Learning Goals ──
   if (!data.ngo_primaryLearningGoal?.trim())
     e.ngo_primaryLearningGoal = "Primary Learning Goal is required";
   else if (data.ngo_primaryLearningGoal.trim().length < 10)
     e.ngo_primaryLearningGoal = "Please describe your goal in at least 10 characters";
 
-  // ── Work Domain ──
   if (!data.ngo_sector?.trim())
     e.ngo_sector = "Sector / Industry is required";
 
-  // ── Role ──
   if (!data.ngo_targetRoleType?.trim())
     e.ngo_targetRoleType = "Target Role Type is required";
 
-  // ── Programme ──
   if (!data.ngo_programmeName?.trim())
     e.ngo_programmeName = "Programme Enrolled In is required";
 
-  // ── Career Intent ──
   if (!data.ngo_careerGoal?.trim())
     e.ngo_careerGoal = "Long-term Career Goal is required";
   else if (data.ngo_careerGoal.trim().length < 10)
@@ -485,7 +449,6 @@ export function validateNgoProfile(data: ProfileData): ValidationErrors {
   if (!data.ngo_workModePreference?.trim())
     e.ngo_workModePreference = "Work Mode Preference is required";
 
-  // ── Portfolio ──
   if (!data.resumeFileName?.trim())
     e.resumeFileName = "Resume is required";
 
@@ -507,11 +470,9 @@ export function validateNgoProfile(data: ProfileData): ValidationErrors {
   return e;
 }
 
-/* ─────────────────── Government Profile validator ─────────────────── */
 export function validateGovernmentProfile(data: ProfileData): ValidationErrors {
   const e: ValidationErrors = {};
 
-  // ── Communication & Language ──
   if (!data.gov_primaryEmail?.trim())
     e.gov_primaryEmail = "Primary email is required";
   else if (!emailRe.test(data.gov_primaryEmail.trim()))
@@ -528,14 +489,12 @@ export function validateGovernmentProfile(data: ProfileData): ValidationErrors {
   if (!data.gov_timezone?.trim())
     e.gov_timezone = "Timezone is required";
 
-  // ── Learning Background ──
   if (!data.gov_highestEducation?.trim())
     e.gov_highestEducation = "Highest Education Level is required";
 
   if (!data.gov_digitalLiteracy?.trim())
     e.gov_digitalLiteracy = "Digital Literacy Level is required";
 
-  // ── Skills, Career Goals & Learning Preferences ──
   if (!data.gov_primaryResponsibilities?.length || !data.gov_primaryResponsibilities[0]?.trim())
     e.gov_primaryResponsibilities = "At least one Primary Responsibility is required";
 
@@ -548,7 +507,6 @@ export function validateGovernmentProfile(data: ProfileData): ValidationErrors {
   if (!data.gov_deviceAvailability?.length)
     e.gov_deviceAvailability = "Select at least one available device";
 
-  // ── Competency & Role Profiling ──
   if (!data.gov_roleCompetency?.trim())
     e.gov_roleCompetency = "Role Competency Level is required";
 
@@ -561,7 +519,6 @@ export function validateGovernmentProfile(data: ProfileData): ValidationErrors {
   if (!data.gov_erpProficiency?.trim())
     e.gov_erpProficiency = "ERP / System Proficiency is required";
 
-  // ── Job / Role Identity ──
   if (!data.gov_jobTitle?.trim())
     e.gov_jobTitle = "Job Title / Designation is required";
 
@@ -574,33 +531,27 @@ export function validateGovernmentProfile(data: ProfileData): ValidationErrors {
   if (!data.gov_roleType?.trim())
     e.gov_roleType = "Role Type is required";
 
-  // ── Department & Ministry ──
   if (!data.gov_ministry?.trim())
     e.gov_ministry = "Ministry is required";
 
   if (!data.gov_department?.trim())
     e.gov_department = "Department / Agency is required";
 
-  // ── Training Mandate Tracking ──
   if (!data.gov_trainingComplianceStatus?.trim())
     e.gov_trainingComplianceStatus = "Training Compliance Status is required";
 
-  // ── Years of Service ──
   if (!data.gov_yearsInCurrentRole?.trim())
     e.gov_yearsInCurrentRole = "Years in Current Role is required";
 
   if (!data.gov_totalGovtService?.trim())
     e.gov_totalGovtService = "Total Government Service is required";
 
-  // ── Connectivity ──
   if (!data.gov_internetConnectivity?.trim())
     e.gov_internetConnectivity = "Internet Connectivity Type is required";
 
-  // ── Posting Location ──
   if (!data.gov_postingLocationType?.trim())
     e.gov_postingLocationType = "Posting Location Type is required";
 
-  // ── Portfolio ──
   if (!data.resumeFileName?.trim())
     e.resumeFileName = "Resume is required";
 
@@ -632,4 +583,28 @@ export function validateGovernmentProfile(data: ProfileData): ValidationErrors {
     e.portfolioEvidence = "At least one Portfolio Evidence entry is required";
 
   return e;
+}
+
+export function validateSchoolProfile(data: ProfileData): ValidationErrors {
+  const errors: ValidationErrors = {};
+
+  if (!data.grade) errors.grade = "Grade / Class is required.";
+  if (!data.rollNumber?.trim()) errors.rollNumber = "Roll number is required.";
+  if (!data.schoolName?.trim()) errors.schoolName = "School name is required.";
+  if (!data.schoolBoard?.trim()) errors.schoolBoard = "Board is required.";
+  if (!data.careerGoal?.trim()) errors.careerGoal = "Career goal is required.";
+
+  if (!data.alternateContact?.trim()) {
+    errors.alternateContact = "Contact number is required.";
+  } else if (!/^[+]?[\d\s\-()]{7,15}$/.test(data.alternateContact.trim())) {
+    errors.alternateContact = "Enter a valid contact number.";
+  }
+
+  if (!data.alternateemailid?.trim()) {
+    errors.alternateemailid = "Email ID is required.";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.alternateemailid.trim())) {
+    errors.alternateemailid = "Enter a valid email address.";
+  }
+
+  return errors;
 }
