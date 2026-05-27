@@ -1,0 +1,154 @@
+/* ══════════════════════════════════════
+   Government Tenant Tab — government.css
+   Import this in GovernmentTab.tsx:
+   import './government.css';
+══════════════════════════════════════ */
+
+/* ── Part banner — full-width coloured header block ── */
+.govt-part-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  box-shadow: var(--sh-raised);
+}
+
+.govt-part-banner--blue {
+  background: linear-gradient(135deg, #eef0fd 0%, #dce0fb 100%);
+  border-left: 4px solid var(--accent);
+}
+
+.govt-part-banner--green {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border-left: 4px solid var(--success);
+}
+
+.dark .govt-part-banner--blue {
+  background: linear-gradient(135deg, #1e2040 0%, #252843 100%);
+}
+
+.dark .govt-part-banner--green {
+  background: linear-gradient(135deg, #0d2318 0%, #103021 100%);
+}
+
+.govt-part-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.govt-part-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.govt-part-sub {
+  font-size: 12px;
+  color: var(--text-sec);
+}
+
+/* ── Chip multi-select ── */
+.govt-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.govt-chip {
+  padding: 8px 16px;
+  border-radius: 99px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--bg);
+  color: var(--text-sec);
+  box-shadow: var(--sh-raised-sm);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.govt-chip:hover {
+  color: var(--accent);
+  box-shadow: var(--sh-inset-sm);
+}
+
+.govt-chip--active {
+  background: var(--accent-light);
+  color: var(--accent);
+  box-shadow: var(--sh-inset-sm);
+  font-weight: 700;
+}
+
+/* ── Completion hint ── */
+.govt-completion-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: var(--accent-light);
+  font-size: 13px;
+  color: var(--text-sec);
+  line-height: 1.5;
+}
+
+.govt-completion-hint span:first-child {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.govt-completion-hint strong {
+  color: var(--accent);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .govt-chip {
+    font-size: 12px;
+    padding: 7px 13px;
+  }
+
+  .govt-part-title {
+    font-size: 14px;
+  }
+
+  .govt-part-icon {
+    font-size: 22px;
+  }
+
+  .govt-part-banner {
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 540px) {
+  .govt-chip-group {
+    gap: 8px;
+  }
+
+  .govt-chip {
+    font-size: 12px;
+    padding: 6px 12px;
+    flex: 1 1 calc(50% - 8px);
+    text-align: center;
+    justify-content: center;
+  }
+
+  .govt-part-banner {
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .govt-completion-hint {
+    font-size: 12px;
+    padding: 12px 14px;
+  }
+}

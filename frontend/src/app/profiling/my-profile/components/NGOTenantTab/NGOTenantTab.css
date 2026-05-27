@@ -1,0 +1,179 @@
+/* ══════════════════════════════════════
+   NGO Tenant Tab — ngoTenant.css
+   Scope: .ngo-tab
+   Shared base styles live in profile.css
+══════════════════════════════════════ */
+
+/* ── Checkbox label ── */
+.ngo-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.ngo-checkbox {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+
+/* ── Section spacing ── */
+.ngo-tab .section + .section {
+  margin-top: 18px;
+}
+
+.ngo-tab .field.full-col {
+  width: 100%;
+}
+
+/* ── Section note ── */
+.section-note {
+  margin: -8px 0 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-sec);
+}
+
+/* ── Impact indicator grid ── */
+.ngo-impact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.ngo-impact-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 132px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--sh-raised-sm);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+.ngo-impact-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--sh-inset-sm);
+}
+
+.ngo-impact-card--active {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  box-shadow: var(--sh-inset-sm);
+}
+
+.ngo-impact-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: var(--surface);
+  color: var(--text-sec);
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: var(--sh-raised-sm);
+}
+
+.ngo-impact-card--active .ngo-impact-toggle {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: none;
+}
+
+.ngo-impact-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.ngo-impact-help {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-sec);
+}
+
+/* ── Certification block ── */
+.ngo-cert-block {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  background: var(--bg);
+  box-shadow: var(--sh-raised-sm);
+}
+
+.ngo-cert-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.ngo-cert-index {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ── Repeat row ── */
+.ngo-repeat-row {
+  margin-bottom: 10px;
+}
+
+.ngo-repeat-row input {
+  flex: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .ngo-impact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .ngo-tab .section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-tab .add-skill-btn {
+    margin-top: 8px;
+  }
+
+  .ngo-repeat-row {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 540px) {
+  .ngo-impact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-impact-card {
+    min-height: auto;
+    padding: 14px;
+  }
+
+  .ngo-repeat-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ngo-repeat-row .remove-skill-btn {
+    width: fit-content;
+  }
+}
