@@ -1,0 +1,427 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #e6e7ee;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.profilePage {
+  display: flex;
+  gap: 30px;
+  min-height: 100vh;
+  padding: 28px 80px 28px 280px;
+  background-color: #e6e7ee;
+  color: #31344b;
+}
+
+.menuButton,
+.closeSidebar {
+  display: none;
+}
+
+.sidebar {
+  position: fixed;
+  top: 28px;
+  left: 60px;
+  width: 180px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.profileCard {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #e6e7ee;
+  color: #5b61ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  border: 3px solid #5b61ff;
+  box-shadow: 6px 6px 12px #c1c2c8, -6px -6px 12px #ffffff;
+}
+
+.profileCard h3 {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.profileCard p {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #6d7080;
+}
+
+.tenantMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tenantMenu button {
+  width: 100%;
+  border: none;
+  min-height: 38px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #e6e7ee;
+  color: #6d7080;
+  box-shadow: 5px 5px 10px #c1c2c8, -5px -5px 10px #ffffff;
+  cursor: pointer;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tenantMenu button:hover,
+.tenantMenu button.active {
+  color: #5b61ff;
+  font-weight: 800;
+  box-shadow: inset 4px 4px 8px #c1c2c8, inset -4px -4px 8px #ffffff;
+}
+
+.contentArea {
+  flex: 1;
+  max-width: 980px;
+}
+
+.contentArea h1 {
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.sectionCard {
+  margin-bottom: 32px;
+  background: transparent;
+}
+
+.sectionCard h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  color: #5b61ff;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.sectionCard h2::before {
+  content: "";
+  width: 24px;
+  height: 3px;
+  border-radius: 999px;
+  background: #5b61ff;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 18px;
+  row-gap: 16px;
+  margin-bottom: 22px;
+}
+
+.formGrid.twoColumns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.inlineGroup {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 18px;
+  row-gap: 16px;
+  align-items: end;
+  margin-bottom: 22px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.field label {
+  min-height: 24px;
+  margin-bottom: 7px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #777a89;
+  letter-spacing: 0.8px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  min-height: 38px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: #e6e7ee;
+  color: #31344b;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: inset 4px 4px 8px #c1c2c8, inset -4px -4px 8px #ffffff;
+}
+
+.field textarea {
+  min-height: 86px;
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #9b9eab;
+}
+
+.field input[type="file"] {
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+.field input[type="file"]::file-selector-button {
+  border: none;
+  margin-right: 10px;
+  padding: 7px 12px;
+  border-radius: 9px;
+  background: #5b61ff;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.fullWidth {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.footerButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+  margin-top: 52px;
+  padding-top: 24px;
+  border-top: 1px solid #ffffff;
+}
+
+.saveBtn,
+.nextBtn {
+  border: none;
+  min-width: 105px;
+  padding: 13px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.saveBtn {
+  background: #5b61ff;
+  color: #ffffff;
+  box-shadow: 5px 5px 10px #c1c2c8, -5px -5px 10px #ffffff;
+}
+
+.nextBtn {
+  background: #e6e7ee;
+  color: #777a89;
+  box-shadow: 5px 5px 10px #c1c2c8, -5px -5px 10px #ffffff;
+}
+
+@media (max-width: 1200px) {
+  .profilePage {
+    padding: 24px 24px 24px 240px;
+  }
+
+  .sidebar {
+    left: 24px;
+  }
+
+  .contentArea {
+    max-width: 100%;
+  }
+
+  .formGrid,
+  .formGrid.twoColumns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .profilePage {
+    display: block;
+    padding: 76px 18px 24px;
+  }
+
+  .menuButton {
+    display: flex;
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 50;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    background: #e6e7ee;
+    color: #31344b;
+    font-size: 24px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 5px 5px 10px #c1c2c8, -5px -5px 10px #ffffff;
+  }
+
+  .sidebar {
+    top: 0;
+    left: -270px;
+    width: 250px;
+    height: 100vh;
+    padding: 28px 18px;
+    background: #e6e7ee;
+    transition: left 0.25s ease;
+    box-shadow: 8px 0 18px rgba(0, 0, 0, 0.12);
+  }
+
+  .sidebar.sidebarOpen {
+    left: 0;
+  }
+
+  .closeSidebar {
+    display: flex;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    background: #e6e7ee;
+    color: #31344b;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 4px 4px 8px #c1c2c8, -4px -4px 8px #ffffff;
+  }
+
+  .sidebarOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 15;
+    border: none;
+    background: rgba(0, 0, 0, 0.22);
+  }
+
+  .formGrid,
+  .formGrid.twoColumns,
+  .inlineGroup {
+    grid-template-columns: 1fr;
+  }
+
+  .field label {
+    min-height: auto;
+  }
+
+  .footerButtons {
+    flex-direction: column;
+  }
+
+  .saveBtn,
+  .nextBtn {
+    width: 100%;
+  }
+}
+/* ── Upload Button ── */
+.uploadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: #e6e7ee;
+  color: #5b61ff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow:
+    5px 5px 10px #c1c2c8,
+    -5px -5px 10px #ffffff;
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+
+.uploadBtn:hover {
+  box-shadow:
+    3px 3px 7px #c1c2c8,
+    -3px -3px 7px #ffffff;
+}
+
+.uploadBtn:active {
+  box-shadow:
+    inset 3px 3px 6px #c1c2c8,
+    inset -3px -3px 6px #ffffff;
+  transform: scale(0.98);
+}
+
+.uploadFileName {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #10b981;
+  word-break: break-all;
+}
+
+/* ── Field Error ── */
+.fieldError {
+  display: block;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ef4444;
+  letter-spacing: 0.3px;
+}
+
+/* ── Error state on input / select / textarea ── */
+.fieldHasError input,
+.fieldHasError select,
+.fieldHasError textarea {
+  box-shadow:
+    inset 4px 4px 8px #f5c2c2,
+    inset -4px -4px 8px #ffffff;
+}
+
+/* ── Save button saved state ── */
+.savedBtn {
+  background: #10b981 !important;
+  box-shadow: none !important;
+}

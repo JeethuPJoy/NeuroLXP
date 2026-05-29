@@ -1,48 +1,75 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import './profile.css';
-import SelfProfileTab    from './components/SudentProfileTab/SudentProfileTab';
-import CorporateStageTab from './components/CorporateStageTab/CorporateStageTab';
-import SkillAcademyTab   from './components/SkillAcademyTab/SkillAcademyTab';
-import GovernmentTab     from './components/government/government';
-import NGOTenantTab      from './components/NGOTenantTab/NGOTenantTab';
-import SchoolTab from './components/SchoolTab/SchoolTab';
+import { useState, useEffect } from "react";
+import "./profile.css";
+import SelfProfileTab from "./components/SudentProfileTab/SudentProfileTab";
+import CorporateStageTab from "./components/CorporateStageTab/CorporateStageTab";
+import SkillAcademyTab from "./components/SkillAcademyTab/SkillAcademyTab";
+import GovernmentTab from "./components/government/government";
+import NGOTenantTab from "./components/NGOTenantTab/NGOTenantTab";
+import SchoolTab from "./components/SchoolTab/SchoolTab";
 
-import { useProfile, ProfileData } from '@/hooks/profiling/useProfile';
-import { saveMyProfile } from '@/lib/profiling/profiling.api';
-import { validateSelfProfile, validateCorporateProfile, ValidationErrors, validateGovernmentProfile, validateNgoProfile, validateSchoolProfile
-        } from '@/hooks/profiling/useProfileValidation';
+import {
+  useProfile,
+  ProfileData,
+} from "@/app/profiling/hooks/profiling/useProfile";
+import { saveMyProfile } from "@/app/profiling/lib/profiling/profiling.api";
+import {
+  validateSelfProfile,
+  validateCorporateProfile,
+  ValidationErrors,
+  validateGovernmentProfile,
+  validateNgoProfile,
+  validateSchoolProfile,
+  validateSkillAcademyProfile,
+} from "@/app/profiling/hooks/profiling/useProfileValidation";
 
-type TabKey = 'self' | 'corporate' | 'skillacademy' | 'government' | 'ngo' | 'school';
-const tabKeys: TabKey[] = ['self', 'corporate', 'skillacademy', 'government', 'ngo', 'school'];
-
-const tabs: { key: TabKey; label: string }[] = [
-  { key: 'self',         label: 'Student' },
-  { key: 'corporate',    label: 'Corporate' },
-  { key: 'skillacademy', label: 'Skill Academy' },
-  { key: 'government',   label: 'Government' },
-  { key: 'ngo',          label: 'NGO' },
-  { key: 'school',       label: 'School' },
+type TabKey =
+  | "self"
+  | "corporate"
+  | "skillacademy"
+  | "government"
+  | "ngo"
+  | "school";
+const tabKeys: TabKey[] = [
+  "self",
+  "corporate",
+  "skillacademy",
+  "government",
+  "ngo",
+  "school",
 ];
 
-const CURRENT_USER_ID = 'current-user-id';
+const tabs: { key: TabKey; label: string }[] = [
+  { key: "self", label: "Student" },
+  { key: "corporate", label: "Corporate" },
+  { key: "skillacademy", label: "Skill Academy" },
+  { key: "government", label: "Government" },
+  { key: "ngo", label: "NGO" },
+  { key: "school", label: "School" },
+];
+
+const CURRENT_USER_ID = "current-user-id";
 
 export default function LearnerProfilePage() {
   const { profile, loading, error } = useProfile(CURRENT_USER_ID);
 
-  const [formData, setFormData]   = useState<ProfileData | null>(null);
-  const [activeTab, setActiveTab] = useState<TabKey>('self');
-  const [dark]                    = useState(false);
-  const [saved, setSaved]         = useState(false);
-  const [saving, setSaving]       = useState(false);
-  const [selfErrors, setSelfErrors]           = useState<ValidationErrors>({});
+  const [formData, setFormData] = useState<ProfileData | null>(null);
+  const [activeTab, setActiveTab] = useState<TabKey>("self");
+  const [dark] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [selfErrors, setSelfErrors] = useState<ValidationErrors>({});
   const [corporateErrors, setCorporateErrors] = useState<ValidationErrors>({});
-  const [ngoErrors, setNgoErrors]             = useState<ValidationErrors>({});
-  const [governmentErrors, setGovernmentErrors] = useState<ValidationErrors>({});
-  const [schoolErrors, setSchoolErrors]           = useState<ValidationErrors>({});
+  const [ngoErrors, setNgoErrors] = useState<ValidationErrors>({});
+  const [governmentErrors, setGovernmentErrors] = useState<ValidationErrors>(
+    {},
+  );
+  const [schoolErrors, setSchoolErrors] = useState<ValidationErrors>({});
+  const [skillAcademyErrors, setSkillAcademyErrors] =
+    useState<ValidationErrors>({});
   const [submitted, setSubmitted] = useState(false);
-  const [menuOpen, setMenuOpen]   = useState(false); // ← hamburger state
+  const [menuOpen, setMenuOpen] = useState(false); // ← hamburger state
 
   useEffect(() => {
     if (profile) setFormData(profile);
@@ -55,15 +82,20 @@ export default function LearnerProfilePage() {
   };
 
   const handleChange = (field: keyof ProfileData, value: unknown) => {
-    setFormData(prev => {
+    setFormData((prev) => {
       if (!prev) return prev;
       const next = { ...prev, [field]: value };
       if (submitted) {
-        setSelfErrors(validateSelfProfile(next));
-        setCorporateErrors(validateCorporateProfile(next));
-        setGovernmentErrors(validateGovernmentProfile(next));
-        setNgoErrors(validateNgoProfile(next));
-        setSchoolErrors(validateSchoolProfile(next));
+        if (activeTab === "self") setSelfErrors(validateSelfProfile(next));
+        else if (activeTab === "corporate")
+          setCorporateErrors(validateCorporateProfile(next));
+        else if (activeTab === "skillacademy")
+          setSkillAcademyErrors(validateSkillAcademyProfile(next));
+        else if (activeTab === "government")
+          setGovernmentErrors(validateGovernmentProfile(next));
+        else if (activeTab === "ngo") setNgoErrors(validateNgoProfile(next));
+        else if (activeTab === "school")
+          setSchoolErrors(validateSchoolProfile(next));
       }
       return next;
     });
@@ -72,33 +104,41 @@ export default function LearnerProfilePage() {
   const handleSave = async () => {
     if (!formData) return;
 
-    const sErr    = validateSelfProfile(formData);
-    const corpErr = validateCorporateProfile(formData);
-    const govErr  = validateGovernmentProfile(formData);
-    const ngoErr    = validateNgoProfile(formData);
-    const schoolErr = validateSchoolProfile(formData);
-    setSelfErrors(sErr);
-    setCorporateErrors(corpErr);
-    setGovernmentErrors(govErr);
-    setNgoErrors(ngoErr);
-    setSchoolErrors(schoolErr);
-    setSubmitted(true);
+    let hasErrors = false;
 
-    const totalErrors =
-      Object.keys(sErr).length +
-      Object.keys(corpErr).length +
-      Object.keys(govErr).length +
-      Object.keys(ngoErr).length +
-      Object.keys(schoolErr).length;
-
-    if (totalErrors > 0) {
-      if (Object.keys(sErr).length > 0)        setActiveTab('self');
-      else if (Object.keys(corpErr).length > 0) setActiveTab('corporate');
-      else if (Object.keys(govErr).length > 0)  setActiveTab('government');
-      else if (Object.keys(ngoErr).length > 0)    setActiveTab('ngo');
-      else if (Object.keys(schoolErr).length > 0) setActiveTab('school');
-      return;
+    if (activeTab === "self") {
+      const sErr = validateSelfProfile(formData);
+      setSelfErrors(sErr);
+      setSubmitted(true);
+      if (Object.keys(sErr).length > 0) hasErrors = true;
+    } else if (activeTab === "corporate") {
+      const corpErr = validateCorporateProfile(formData);
+      setCorporateErrors(corpErr);
+      setSubmitted(true);
+      if (Object.keys(corpErr).length > 0) hasErrors = true;
+    } else if (activeTab === "skillacademy") {
+      const skillAcadErr = validateSkillAcademyProfile(formData);
+      setSkillAcademyErrors(skillAcadErr);
+      setSubmitted(true);
+      if (Object.keys(skillAcadErr).length > 0) hasErrors = true;
+    } else if (activeTab === "government") {
+      const govErr = validateGovernmentProfile(formData);
+      setGovernmentErrors(govErr);
+      setSubmitted(true);
+      if (Object.keys(govErr).length > 0) hasErrors = true;
+    } else if (activeTab === "ngo") {
+      const ngoErr = validateNgoProfile(formData);
+      setNgoErrors(ngoErr);
+      setSubmitted(true);
+      if (Object.keys(ngoErr).length > 0) hasErrors = true;
+    } else if (activeTab === "school") {
+      const schoolErr = validateSchoolProfile(formData);
+      setSchoolErrors(schoolErr);
+      setSubmitted(true);
+      if (Object.keys(schoolErr).length > 0) hasErrors = true;
     }
+
+    if (hasErrors) return;
 
     setSaving(true);
     try {
@@ -106,7 +146,7 @@ export default function LearnerProfilePage() {
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch {
-      alert('Failed to save profile. Please try again.');
+      alert("Failed to save profile. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -117,47 +157,79 @@ export default function LearnerProfilePage() {
     if (i < tabKeys.length - 1) setActiveTab(tabKeys[i + 1]);
   };
 
-  if (loading) return (
-    <div className="profile-root">
-      <p style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-sec)' }}>Loading profile…</p>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="profile-root">
+        <p
+          style={{
+            padding: "2rem",
+            textAlign: "center",
+            color: "var(--text-sec)",
+          }}
+        >
+          Loading profile…
+        </p>
+      </div>
+    );
 
-  if (error || !formData) return (
-    <div className="profile-root">
-      <p style={{ padding: '2rem', textAlign: 'center', color: 'var(--danger)' }}>{error ?? 'Could not load profile.'}</p>
-    </div>
-  );
+  if (error || !formData)
+    return (
+      <div className="profile-root">
+        <p
+          style={{
+            padding: "2rem",
+            textAlign: "center",
+            color: "var(--danger)",
+          }}
+        >
+          {error ?? "Could not load profile."}
+        </p>
+      </div>
+    );
 
   const initials = formData.fullName
-    ? formData.fullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
-    : '??';
+    ? formData.fullName
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "??";
 
-  const activeTabMeta = tabs.find(t => t.key === activeTab) ?? tabs[0];
+  const activeTabMeta = tabs.find((t) => t.key === activeTab) ?? tabs[0];
 
   const currentTabErrorCount =
-    activeTab === 'self'       ? Object.keys(selfErrors).length       :
-    activeTab === 'corporate'  ? Object.keys(corporateErrors).length  :
-    activeTab === 'government' ? Object.keys(governmentErrors).length :
-    activeTab === 'ngo'        ? Object.keys(ngoErrors).length        :
-    activeTab === 'school'     ? Object.keys(schoolErrors).length     : 0;
+    activeTab === "self"
+      ? Object.keys(selfErrors).length
+      : activeTab === "corporate"
+        ? Object.keys(corporateErrors).length
+        : activeTab === "skillacademy"
+          ? Object.keys(skillAcademyErrors).length
+          : activeTab === "government"
+            ? Object.keys(governmentErrors).length
+            : activeTab === "ngo"
+              ? Object.keys(ngoErrors).length
+              : activeTab === "school"
+                ? Object.keys(schoolErrors).length
+                : 0;
 
   return (
-    <div className={`profile-root${dark ? ' dark' : ''}`}>
-
+    <div className={`profile-root${dark ? " dark" : ""}`}>
       {/* ── Mobile top bar ── */}
       <div className="mobile-topbar">
         <div className="mobile-topbar-left">
           <div className="avatar mobile-avatar">{initials}</div>
-          <span className="mobile-topbar-name">{formData.fullName || '—'}</span>
+          <span className="mobile-topbar-name">{formData.fullName || "—"}</span>
         </div>
         <button
-          className={`hamburger${menuOpen ? ' open' : ''}`}
-          onClick={() => setMenuOpen(o => !o)}
+          className={`hamburger${menuOpen ? " open" : ""}`}
+          onClick={() => setMenuOpen((o) => !o)}
           type="button"
           aria-label="Toggle menu"
         >
-          <span /><span /><span />
+          <span />
+          <span />
+          <span />
         </button>
       </div>
 
@@ -167,18 +239,18 @@ export default function LearnerProfilePage() {
       )}
 
       {/* ── Mobile drawer ── */}
-      <div className={`drawer${menuOpen ? ' drawer--open' : ''}`}>
+      <div className={`drawer${menuOpen ? " drawer--open" : ""}`}>
         <div className="drawer-avatar-wrap">
           <div className="avatar">{initials}</div>
-          <div className="avatar-name">{formData.fullName || '—'}</div>
-          <div className="avatar-roll">{formData.userId || '—'}</div>
-          <div className="avatar-dept">{formData.department || '—'}</div>
+          <div className="avatar-name">{formData.fullName || "—"}</div>
+          <div className="avatar-roll">{formData.userId || "—"}</div>
+          <div className="avatar-dept">{formData.department || "—"}</div>
         </div>
         <nav className="drawer-nav">
-          {tabs.map(t => (
+          {tabs.map((t) => (
             <button
               key={t.key}
-              className={`nav-btn${activeTab === t.key ? ' active' : ''}`}
+              className={`nav-btn${activeTab === t.key ? " active" : ""}`}
               onClick={() => handleTabSelect(t.key)}
               type="button"
             >
@@ -193,15 +265,15 @@ export default function LearnerProfilePage() {
         <aside className="sidebar">
           <div className="avatar-wrap">
             <div className="avatar">{initials}</div>
-            <div className="avatar-name">{formData.fullName || '—'}</div>
-            <div className="avatar-roll">{formData.userId || '—'}</div>
-            <div className="avatar-dept">{formData.department || '—'}</div>
+            <div className="avatar-name">{formData.fullName || "—"}</div>
+            <div className="avatar-roll">{formData.userId || "—"}</div>
+            <div className="avatar-dept">{formData.department || "—"}</div>
           </div>
           <nav className="nav">
-            {tabs.map(t => (
+            {tabs.map((t) => (
               <button
                 key={t.key}
-                className={`nav-btn${activeTab === t.key ? ' active' : ''}`}
+                className={`nav-btn${activeTab === t.key ? " active" : ""}`}
                 onClick={() => setActiveTab(t.key)}
                 type="button"
               >
@@ -218,27 +290,68 @@ export default function LearnerProfilePage() {
 
           {submitted && currentTabErrorCount > 0 && (
             <div className="validation-banner">
-              ⚠ Please fix {currentTabErrorCount} error{currentTabErrorCount > 1 ? 's' : ''} before saving.
+              ⚠ Please fix {currentTabErrorCount} error
+              {currentTabErrorCount > 1 ? "s" : ""} before saving.
             </div>
           )}
 
-          {activeTab === 'self'         && <SelfProfileTab    profile={formData} onChange={handleChange} errors={selfErrors} />}
-          {activeTab === 'corporate'    && <CorporateStageTab profile={formData} onChange={handleChange} errors={corporateErrors} />}
-          {activeTab === 'skillacademy' && <SkillAcademyTab   profile={formData} onChange={handleChange} />}
-          {activeTab === 'government'   && <GovernmentTab     profile={formData} onChange={handleChange} errors={governmentErrors} />}
-          {activeTab === 'ngo'          && <NGOTenantTab      profile={formData} onChange={handleChange} errors={ngoErrors} />}
-          {activeTab === 'school'     && <SchoolTab      profile={formData} onChange={handleChange} errors={schoolErrors} />}
+          {activeTab === "self" && (
+            <SelfProfileTab
+              profile={formData}
+              onChange={handleChange}
+              errors={selfErrors}
+            />
+          )}
+          {activeTab === "corporate" && (
+            <CorporateStageTab
+              profile={formData}
+              onChange={handleChange}
+              errors={corporateErrors}
+            />
+          )}
+          {activeTab === "skillacademy" && (
+            <SkillAcademyTab
+              profile={formData}
+              onChange={handleChange}
+              errors={skillAcademyErrors}
+            />
+          )}
+          {activeTab === "government" && (
+            <GovernmentTab
+              profile={formData}
+              onChange={handleChange}
+              errors={governmentErrors}
+            />
+          )}
+          {activeTab === "ngo" && (
+            <NGOTenantTab
+              profile={formData}
+              onChange={handleChange}
+              errors={ngoErrors}
+            />
+          )}
+          {activeTab === "school" && (
+            <SchoolTab
+              profile={formData}
+              onChange={handleChange}
+              errors={schoolErrors}
+            />
+          )}
 
           <div className="save-footer">
             <button
-              className={`btn btn-primary${saved ? ' saved' : ''}`}
+              className={`btn btn-primary${saved ? " saved" : ""}`}
               onClick={handleSave}
               disabled={saving}
               type="button"
             >
-              {saving ? 'Saving…' : saved ? '✓ Profile Saved!' : 'Save Profile'}
+              {saving ? "Saving…" : saved ? "✓ Profile Saved!" : "Save Profile"}
             </button>
-            <button className="btn btn-danger-ghost" type="button" onClick={handleNext}>
+            <button
+              className="btn btn-danger-ghost"
+              type="button"
+              onClick={handleNext}
+            >
               Next &gt;&gt;
             </button>
           </div>

@@ -3,8 +3,8 @@
 import "./skillAcademyTab.css";
 
 import TagInput from "../TagInput";
-import { ProfileData } from "@/hooks/profiling/useProfile";
-import { ValidationErrors } from "@/hooks/profiling/useProfileValidation";
+import { ProfileData } from "@/app/profiling/hooks/profiling/useProfile";
+import { ValidationErrors } from "@/app/profiling/hooks/profiling/useProfileValidation";
 
 interface Props {
   profile: ProfileData;
@@ -39,7 +39,7 @@ export default function SkillAcademyTab({
   onChange,
   errors = {},
 }: Props) {
-  const MAX_FILE_SIZE = 10 * 1024; // 10 KB
+  const MAX_FILE_SIZE = 10 * 1024; 
 
   const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

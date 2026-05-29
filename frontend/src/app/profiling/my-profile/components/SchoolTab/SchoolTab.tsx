@@ -1,8 +1,8 @@
 "use client";
 
 import "./schoolTab.css";
-import { ProfileData } from "@/hooks/profiling/useProfile";
-import { ValidationErrors } from "@/hooks/profiling/useProfileValidation";
+import { ProfileData } from "@/app/profiling/hooks/profiling/useProfile";
+import { ValidationErrors } from "@/app/profiling/hooks/profiling/useProfileValidation";
 
 interface Props {
   profile: ProfileData;
@@ -37,7 +37,7 @@ function fieldCls(err?: string) {
 }
 
 export default function SchoolTab({ profile, onChange, errors = {} }: Props) {
-  const MAX_FILE_SIZE = 10 * 1024; // 10 KB
+  const MAX_FILE_SIZE = 10 * 1024; 
 
   const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -203,7 +203,7 @@ export default function SchoolTab({ profile, onChange, errors = {} }: Props) {
         <SectionHeading title="Academic Profile" />
         <div className="section-grid">
           <div className={fieldCls(errors.streamOrGroup)}>
-            <label className="field-label">Stream / Group</label>
+            <label className="field-label">Stream / Group <Req /></label>
             <select
               value={profile.streamOrGroup ?? ""}
               onChange={(e) => onChange("streamOrGroup", e.target.value)}
@@ -223,26 +223,29 @@ export default function SchoolTab({ profile, onChange, errors = {} }: Props) {
                 </option>
               ))}
             </select>
+            <FieldError msg={errors.streamOrGroup} />
           </div>
 
           <div className={fieldCls(errors.overallPercentage)}>
-            <label className="field-label">Overall Percentage / CGPA</label>
+            <label className="field-label">Overall Percentage / CGPA <Req /></label>
             <input
               type="text"
               value={profile.overallPercentage ?? ""}
               onChange={(e) => onChange("overallPercentage", e.target.value)}
               placeholder="e.g. 87% or 8.5 CGPA"
             />
+            <FieldError msg={errors.overallPercentage} />
           </div>
 
           <div className={fieldCls(errors.favouriteSubject)}>
-            <label className="field-label">Favourite Subject</label>
+            <label className="field-label">Favourite Subject <Req /></label>
             <input
               type="text"
               value={profile.favouriteSubject ?? ""}
               onChange={(e) => onChange("favouriteSubject", e.target.value)}
               placeholder="e.g. Mathematics"
             />
+            <FieldError msg={errors.favouriteSubject} />
           </div>
 
           <div className={fieldCls(errors.academicStrengths)}>
@@ -425,8 +428,8 @@ export default function SchoolTab({ profile, onChange, errors = {} }: Props) {
       <div className="section">
         <SectionHeading title="Learning Preferences" />
         <div className="section-grid">
-          <div className="field">
-            <label className="field-label">Preferred Learning Mode</label>
+          <div className={fieldCls(errors.preferredLearningMode)}>
+            <label className="field-label">Preferred Learning Mode <Req /></label>
             <select
               value={profile.preferredLearningMode ?? ""}
               onChange={(e) =>
@@ -444,10 +447,11 @@ export default function SchoolTab({ profile, onChange, errors = {} }: Props) {
                 <option key={m}>{m}</option>
               ))}
             </select>
+            <FieldError msg={errors.preferredLearningMode} />
           </div>
 
-          <div className="field">
-            <label className="field-label">Learning Style</label>
+          <div className={fieldCls(errors.learningStyle)}>
+            <label className="field-label">Learning Style <Req /></label>
             <select
               value={profile.learningStyle ?? ""}
               onChange={(e) => onChange("learningStyle", e.target.value)}
@@ -459,6 +463,7 @@ export default function SchoolTab({ profile, onChange, errors = {} }: Props) {
                 ),
               )}
             </select>
+            <FieldError msg={errors.learningStyle} />
           </div>
 
           <div className="field">
@@ -516,18 +521,19 @@ export default function SchoolTab({ profile, onChange, errors = {} }: Props) {
       <div className="section">
         <SectionHeading title="Parent / Guardian Info" />
         <div className="section-grid">
-          <div className="field">
-            <label className="field-label">Guardian Name</label>
+          <div className={fieldCls(errors.guardianName)}>
+            <label className="field-label">Guardian Name <Req /></label>
             <input
               type="text"
               value={profile.guardianName ?? ""}
               onChange={(e) => onChange("guardianName", e.target.value)}
               placeholder="e.g. Rajan P Joy"
             />
+            <FieldError msg={errors.guardianName} />
           </div>
 
-          <div className="field">
-            <label className="field-label">Relationship</label>
+          <div className={fieldCls(errors.guardianRelation )}>
+            <label className="field-label">Relationship <Req /></label>
             <select
               value={profile.guardianRelation ?? ""}
               onChange={(e) => onChange("guardianRelation", e.target.value)}
@@ -537,16 +543,18 @@ export default function SchoolTab({ profile, onChange, errors = {} }: Props) {
                 <option key={r}>{r}</option>
               ))}
             </select>
+            <FieldError msg={errors.guardianRelation} />
           </div>
 
-          <div className="field">
-            <label className="field-label">Guardian Contact</label>
+          <div className={fieldCls(errors.guardianContact)}>
+            <label className="field-label">Guardian Contact <Req /></label>
             <input
               type="text"
               value={profile.guardianContact ?? ""}
               onChange={(e) => onChange("guardianContact", e.target.value)}
               placeholder="+91 XXXXX XXXXX"
             />
+            <FieldError msg="{error.guardianContact}" />
           </div>
 
           <div className="field">

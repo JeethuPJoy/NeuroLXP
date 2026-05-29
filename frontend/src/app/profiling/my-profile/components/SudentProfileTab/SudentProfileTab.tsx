@@ -4,8 +4,8 @@ import "./SudentProfileTab.css";
 
 import ISO6391 from "iso-639-1";
 import TagInput from "../TagInput";
-import { ProfileData } from "@/hooks/profiling/useProfile";
-import { ValidationErrors } from "@/hooks/profiling/useProfileValidation";
+import { ProfileData } from "@/app/profiling/hooks/profiling/useProfile";
+import { ValidationErrors } from "@/app/profiling/hooks/profiling/useProfileValidation";
 
 interface Props {
   profile: ProfileData;
@@ -40,7 +40,7 @@ export default function SelfProfileTab({
   onChange,
   errors = {},
 }: Props) {
-  const MAX_FILE_SIZE = 10 * 1024; // 10 KB
+  const MAX_FILE_SIZE = 10 * 1024; 
 
   const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -221,7 +221,6 @@ export default function SelfProfileTab({
         </div>
       </div>
 
-      {/* ── Education & Background ── */}
       <div className="section">
         <div className="section-header">
           <div className="section-bar" />

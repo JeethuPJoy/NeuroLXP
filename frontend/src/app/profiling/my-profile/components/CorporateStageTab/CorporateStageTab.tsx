@@ -1,8 +1,8 @@
 "use client";
 
 import "./corporateStageTab.css";
-import { ProfileData } from "@/hooks/profiling/useProfile";
-import { ValidationErrors } from "@/hooks/profiling/useProfileValidation";
+import { ProfileData } from "@/app/profiling/hooks/profiling/useProfile";
+import { ValidationErrors } from "@/app/profiling/hooks/profiling/useProfileValidation";
 import TagInput from "../TagInput";
 
 interface Props {
@@ -42,7 +42,7 @@ export default function CorporateStageTab({
   onChange,
   errors = {},
 }: Props) {
-  const MAX_FILE_SIZE = 10 * 1024; // 10 KB
+  const MAX_FILE_SIZE = 10 * 1024;
 
   const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -815,6 +815,7 @@ export default function CorporateStageTab({
             </div>
           </div>
         ))}
+        <FieldError msg={errors.selfSkills} />
       </div>
 
       <div className="section">

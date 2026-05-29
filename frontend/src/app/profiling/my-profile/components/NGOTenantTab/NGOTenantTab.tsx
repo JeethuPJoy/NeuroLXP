@@ -2,8 +2,8 @@
 
 import ISO6391 from "iso-639-1";
 import TagInput from "../TagInput";
-import { ProfileData } from "@/hooks/profiling/useProfile";
-import { ValidationErrors } from "@/hooks/profiling/useProfileValidation";
+import { ProfileData } from "@/app/profiling/hooks/profiling/useProfile";
+import { ValidationErrors } from "@/app/profiling/hooks/profiling/useProfileValidation";
 import "./NGOTenantTab.css";
 
 interface Props {
@@ -34,7 +34,6 @@ function fieldCls(err?: string) {
   return `field${err ? " field--error" : ""}`;
 }
 
-// ── Impact indicator cards ─────────────────────────────────────────────────
 type ImpactField = {
   key: keyof ProfileData;
   label: string;
@@ -89,7 +88,6 @@ const impactFields: ImpactField[] = [
   },
 ];
 
-// ── Option lists ───────────────────────────────────────────────────────────
 const workModeOptions = [
   "On-site",
   "Remote",
@@ -340,7 +338,6 @@ const englishProficiencyOptions = [
   "Advanced / Fluent",
 ];
 
-// ── Main component ─────────────────────────────────────────────────────────
 export default function NGOTenantTab({
   profile,
   onChange,
@@ -393,7 +390,7 @@ export default function NGOTenantTab({
 
   const languages = ISO6391.getAllNames();
 
-  const MAX_FILE_SIZE = 10 * 1024; // 10 KB
+  const MAX_FILE_SIZE = 10 * 1024; 
 
   const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -577,8 +574,10 @@ export default function NGOTenantTab({
             <FieldError msg={errors.ngo_country as string} />
           </div>
 
-          <div className="field">
-            <label className="field-label">State / Province</label>
+          <div className={fieldCls(errors.ngo_state as string)}>
+            <label className="field-label">
+              State / Province <Req />
+            </label>
             <input
               type="text"
               value={str("ngo_state")}
@@ -587,10 +586,13 @@ export default function NGOTenantTab({
               }
               placeholder="e.g. Kerala, Nairobi County"
             />
+            <FieldError msg={errors.ngo_state as string} />
           </div>
 
-          <div className="field">
-            <label className="field-label">District / City</label>
+          <div className={fieldCls(errors.ngo_district as string)}>
+            <label className="field-label">
+              District / City <Req />
+            </label>
             <input
               type="text"
               value={str("ngo_district")}
@@ -599,6 +601,7 @@ export default function NGOTenantTab({
               }
               placeholder="e.g. Wayanad, Mombasa"
             />
+            <FieldError msg={errors.ngo_district as string} />
           </div>
 
           <div className="field">
@@ -728,7 +731,6 @@ export default function NGOTenantTab({
               ))}
             </select>
           </div>
-
         </div>
       </div>
 
@@ -1190,7 +1192,6 @@ export default function NGOTenantTab({
       </div>
 
       <div className="section">
-        
         <SectionHeading title="Mandatory Certifications" />
         {certifications.map((cert, index) => (
           <div key={index} className="ngo-cert-block">
@@ -1497,7 +1498,9 @@ export default function NGOTenantTab({
               📎 Choose File
             </label>
             {profile.resumeFileName && (
-              <span className="upload-file-name">✓ {profile.resumeFileName}</span>
+              <span className="upload-file-name">
+                ✓ {profile.resumeFileName}
+              </span>
             )}
             <FieldError msg={errors.resumeFileName} />
           </div>

@@ -1,5 +1,5 @@
 import Toggle from './Toggle';
-import { ProfileData } from '@/hooks/profiling/useProfile';
+import { ProfileData } from '@/app/profiling/hooks/profiling/useProfile';
 
 interface Props {
   profile: ProfileData;

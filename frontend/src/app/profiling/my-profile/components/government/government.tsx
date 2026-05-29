@@ -2,8 +2,8 @@
 
 import ISO6391 from "iso-639-1";
 import TagInput from "../TagInput";
-import { ProfileData } from "@/hooks/profiling/useProfile";
-import { ValidationErrors } from "@/hooks/profiling/useProfileValidation";
+import { ProfileData } from "@/app/profiling/hooks/profiling/useProfile";
+import { ValidationErrors } from "@/app/profiling/hooks/profiling/useProfileValidation";
 
 interface Props {
   profile: ProfileData;
@@ -491,7 +491,7 @@ export default function GovernmentTab({
     set(key, updated);
   };
 
-  const MAX_FILE_SIZE = 10 * 1024; // 10 KB
+  const MAX_FILE_SIZE = 10 * 1024;
 
   const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -558,7 +558,7 @@ export default function GovernmentTab({
           <div className="field full-col">
             <label className="field-label">
               Preferred Communication Mode
-              <span className="optional-tag"> (select all that apply)</span>
+              <span className="optional-tag"> (select all that apply)</span> <Req />
             </label>
             <div className="govt-chip-group">
               {commModeOptions.map((mode) => (
@@ -574,6 +574,7 @@ export default function GovernmentTab({
                 </button>
               ))}
             </div>
+            <FieldError msg={errors.gov_communicationModes as string} />
           </div>
         </div>
       </div>
